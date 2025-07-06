@@ -1,0 +1,435 @@
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
+
+:root {
+    --background: #000000;
+    --text: rgba(255, 192, 203, 0.85);
+    --text-muted: rgba(255, 192, 203, 0.5);
+    --text-bright: rgba(255, 192, 203, 0.95);
+    --card-bg: rgba(255, 192, 203, 0.1);
+    --card-hover: rgba(255, 192, 203, 0.15);
+    --border: rgba(255, 192, 203, 0.2);
+    --hover-border: rgba(255, 192, 203, 0.4);
+    --button-bg: rgba(255, 192, 203, 0.15);
+    --button-hover: rgba(255, 192, 203, 0.25);
+    --link-color: #ff9eb5;
+    --link-hover: #ffb8c9;
+    --notification-success-bg: rgba(80, 250, 123, 0.8);
+    --notification-error-bg: rgba(255, 85, 85, 0.8);
+    --notification-info-bg: rgba(255, 192, 203, 0.8);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Custom Text Selection Color */
+::selection {
+    background-color: var(--link-hover);
+    color: var(--background);
+}
+::-moz-selection { /* For Firefox */
+    background-color: var(--link-hover);
+    color: var(--background);
+}
+
+body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: 'Ubuntu Mono', monospace;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    width: 100%;
+    flex-grow: 1;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+header h1 {
+    font-family: 'Rubik 80s Fade', sans-serif;
+    font-weight: 400; /* No bolding */
+    font-size: 3rem;
+    color: var(--text-bright);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 7px var(--text-bright), 0 0 15px rgba(255, 184, 201, 0.6); /* Bloom effect */
+    transition: text-shadow 0.3s ease;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.wallets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.wallet-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    perspective: 1000px; /* Crucial for 3D effect */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.wallet-card-link:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+.wallet-card, .payment-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.4s ease; /* Added transform transition */
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+.js-enabled .wallet-card-link {
+    cursor: pointer;
+}
+
+.wallet-card-link:hover .wallet-card,
+.wallet-card-link:hover .payment-card {
+    border-color: var(--hover-border);
+    background: var(--card-hover);
+}
+
+.crypto-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.crypto-icon svg {
+    width: 100%;
+    height: 100%;
+    color: var(--text); /* This will color the 'currentColor' parts of the SVG */
+}
+
+.wallet-info {
+    flex-grow: 1;
+    min-width: 0; /* Prevents text overflow issues */
+}
+
+.wallet-info h3 {
+    color: var(--text-bright);
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+}
+
+.wallet-info .address {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    word-break: break-all;
+}
+
+.wallet-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Hide buttons by default, show with JS */
+.wallet-actions button {
+    display: none;
+}
+.js-enabled .wallet-actions button {
+    display: flex;
+    background-color: var(--button-bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 184, 201, 0.2);
+}
+
+.js-enabled .wallet-actions button:hover {
+    background-color: var(--button-hover);
+    border-color: transparent; /* Hide border on hover */
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 184, 201, 0.4);
+}
+
+.copy-btn::before { content: '📋'; }
+.explorer-btn::before { content: '🔗'; }
+
+/* Payment Section */
+.payment-section {
+    padding-top: 1.5rem;
+}
+
+.payment-section h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-bright);
+    font-size: 1.5rem;
+}
+
+.payment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Footer */
+footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.github-link, .inspired-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 0.25rem 0.5rem;
+}
+
+.github-link:hover, .inspired-link:hover {
+    color: var(--text-bright);
+    transform: translateY(-2px);
+}
+
+.github-link svg {
+    width: 24px;
+    height: 24px;
+}
+
+.inspired-link {
+    font-size: 0.9rem;
+}
+
+/* Notifications */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: black;
+    font-weight: bold;
+    font-size: 1rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateX(100%);
+    animation: slideIn 0.5s forwards;
+}
+
+.notification.success { background-color: var(--notification-success-bg); }
+.notification.error { background-color: var(--notification-error-bg); }
+.notification.info { background-color: var(--notification-info-bg); }
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Modal */
+#modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+#modal-backdrop.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#modal-content {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+    min-width: 320px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+#modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+#modal-close-btn:hover {
+    color: var(--text-bright);
+    transform: scale(1.2);
+}
+
+#modal-title {
+    font-size: 1.5rem;
+    color: var(--text-bright);
+}
+
+#modal-qr-code {
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    line-height: 0; /* Fixes extra space under canvas */
+}
+
+#modal-address {
+    font-size: 1rem;
+    color: var(--text);
+    word-break: break-all;
+    background: rgba(0,0,0,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+#modal-copy-btn,
+#modal-explorer-btn {
+    flex-grow: 1;
+    background-color: var(--button-bg);
+    border: 1px solid var(--border);
+    color: var(--text-bright);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: 'Ubuntu Mono', monospace;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 184, 201, 0.2);
+}
+
+#modal-copy-btn:hover,
+#modal-explorer-btn:hover {
+    background-color: var(--button-hover);
+    border-color: var(--hover-border);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 184, 201, 0.4);
+}
+
+/* Universal Squish Click Effect */
+.wallet-card-link:active {
+    transform: translateY(0px) scale(0.99);
+    transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+.wallet-actions button:active,
+#modal-copy-btn:active,
+#modal-explorer-btn:active,
+.github-link:active,
+.inspired-link:active {
+    transform: translateY(2px) scale(0.95); /* Sunken + Squish effect */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Smaller shadow to look pressed */
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 10px;
+  border: 2px solid var(--background);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--hover-border);
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .wallets-grid, .payment-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
