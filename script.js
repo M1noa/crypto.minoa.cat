@@ -1,4 +1,59 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Function to generate random pastel color
+    function generateRandomPastelColor() {
+        const hue = Math.floor(Math.random() * 360);
+        const saturation = 30 + Math.floor(Math.random() * 40); // 30-70% saturation
+        const lightness = 70 + Math.floor(Math.random() * 20); // 70-90% lightness
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    // Function to apply random pastel theme
+    function applyRandomPastelTheme() {
+        const pastelColor = generateRandomPastelColor();
+        const root = document.documentElement;
+        
+        // Convert HSL to RGB for alpha calculations
+        const tempDiv = document.createElement('div');
+        tempDiv.style.color = pastelColor;
+        document.body.appendChild(tempDiv);
+        const rgbColor = window.getComputedStyle(tempDiv).color;
+        document.body.removeChild(tempDiv);
+        
+        // Extract RGB values
+        const rgbMatch = rgbColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+        if (rgbMatch) {
+            const [, r, g, b] = rgbMatch;
+            
+            // Set CSS custom properties for pastel theme
+            root.style.setProperty('--background', '#000000');
+            root.style.setProperty('--text', `rgba(${r}, ${g}, ${b}, 0.85)`);
+            root.style.setProperty('--text-muted', `rgba(${r}, ${g}, ${b}, 0.5)`);
+            root.style.setProperty('--text-bright', `rgba(${r}, ${g}, ${b}, 0.95)`);
+            root.style.setProperty('--card-bg', `rgba(${r}, ${g}, ${b}, 0.1)`);
+            root.style.setProperty('--card-hover', `rgba(${r}, ${g}, ${b}, 0.15)`);
+            root.style.setProperty('--border', `rgba(${r}, ${g}, ${b}, 0.2)`);
+            root.style.setProperty('--hover-border', `rgba(${r}, ${g}, ${b}, 0.4)`);
+            root.style.setProperty('--button-bg', `rgba(${r}, ${g}, ${b}, 0.15)`);
+            root.style.setProperty('--button-hover', `rgba(${r}, ${g}, ${b}, 0.25)`);
+            root.style.setProperty('--link-color', pastelColor);
+            root.style.setProperty('--link-hover', `rgba(${r}, ${g}, ${b}, 0.8)`);
+            root.style.setProperty('--notification-success-bg', 'rgba(80, 250, 123, 0.8)');
+            root.style.setProperty('--notification-error-bg', 'rgba(255, 85, 85, 0.8)');
+            root.style.setProperty('--notification-info-bg', `rgba(${r}, ${g}, ${b}, 0.8)`);
+        }
+    }
+
+    // Randomly select between pink, white, and pastel themes
+    const themes = ['pink', 'white', 'pastel'];
+    const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+    
+    if (randomTheme === 'pastel') {
+        applyRandomPastelTheme();
+        document.documentElement.setAttribute('data-theme', 'pastel');
+    } else {
+        document.documentElement.setAttribute('data-theme', randomTheme);
+    }
+    
     // Add a class to the body to indicate JS is enabled
     document.body.classList.add('js-enabled');
     
