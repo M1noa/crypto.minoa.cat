@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const OPEN_IN_NEW_TAB = 'noopener,noreferrer';
+
     // Function to generate random pastel color
     function generateRandomPastelColor() {
         const hue = Math.floor(Math.random() * 360);
@@ -35,11 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
             root.style.setProperty('--hover-border', `rgba(${r}, ${g}, ${b}, 0.4)`);
             root.style.setProperty('--button-bg', `rgba(${r}, ${g}, ${b}, 0.15)`);
             root.style.setProperty('--button-hover', `rgba(${r}, ${g}, ${b}, 0.25)`);
+            root.style.setProperty('--button-shadow-soft', `rgba(${r}, ${g}, ${b}, 0.12)`);
+            root.style.setProperty('--button-shadow-strong', `rgba(${r}, ${g}, ${b}, 0.18)`);
             root.style.setProperty('--link-color', pastelColor);
             root.style.setProperty('--link-hover', `rgba(${r}, ${g}, ${b}, 0.8)`);
-            root.style.setProperty('--notification-success-bg', 'rgba(80, 250, 123, 0.8)');
-            root.style.setProperty('--notification-error-bg', 'rgba(255, 85, 85, 0.8)');
-            root.style.setProperty('--notification-info-bg', `rgba(${r}, ${g}, ${b}, 0.8)`);
+            root.style.setProperty('--notification-success-bg', 'rgba(80, 250, 123, 0.16)');
+            root.style.setProperty('--notification-error-bg', 'rgba(255, 85, 85, 0.16)');
+            root.style.setProperty('--notification-info-bg', `rgba(${r}, ${g}, ${b}, 0.14)`);
         }
     }
 
@@ -68,13 +72,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalExplorerBtn = document.getElementById('modal-explorer-btn');
     
     let currentModalData = {};
+    const activeNotifications = new Map();
+
+    function openExternal(url) {
+        window.open(url, '_blank', OPEN_IN_NEW_TAB);
+    }
 
     // --- Notifications --- //
     function showNotification(message, type = 'info') {
+        const notificationKey = `${type}:${message}`;
+        const existingNotification = activeNotifications.get(notificationKey);
+
+        if (existingNotification) {
+            existingNotification.count += 1;
+            existingNotification.countNode.textContent = `×${existingNotification.count}`;
+            existingNotification.element.classList.add('is-stacked', 'is-refreshing');
+
+            clearTimeout(existingNotification.hideTimeout);
+            clearTimeout(existingNotification.refreshTimeout);
+
+            existingNotification.refreshTimeout = setTimeout(() => {
+                existingNotification.element.classList.remove('is-refreshing');
+            }, 180);
+
+            existingNotification.hideTimeout = setTimeout(() => {
+                hideNotification(notificationKey);
+            }, 3200);
+            return;
+        }
+
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
-        notification.textContent = message;
+
+        const messageNode = document.createElement('span');
+        messageNode.className = 'notification__message';
+        messageNode.textContent = message;
+
+        const countNode = document.createElement('span');
+        countNode.className = 'notification__count';
+        countNode.textContent = '×1';
+
+        notification.append(messageNode, countNode);
         notificationContainer.appendChild(notification);
+
+        activeNotifications.set(notificationKey, {
+            element: notification,
+            count: 1,
+            countNode,
+            hideTimeout: null,
+            refreshTimeout: null
+        });
 
         // Animate in
         setTimeout(() => {
@@ -83,11 +130,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 10);
 
         // Animate out and remove
+        const hideTimeout = setTimeout(() => {
+            hideNotification(notificationKey);
+        }, 3200);
+
+        activeNotifications.get(notificationKey).hideTimeout = hideTimeout;
+    }
+
+    function hideNotification(notificationKey) {
+        const notificationEntry = activeNotifications.get(notificationKey);
+
+        if (!notificationEntry) {
+            return;
+        }
+
+        notificationEntry.element.classList.remove('is-refreshing');
+        notificationEntry.element.style.opacity = '0';
+        notificationEntry.element.style.transform = 'translateX(120%)';
+
+        clearTimeout(notificationEntry.hideTimeout);
+        clearTimeout(notificationEntry.refreshTimeout);
+
         setTimeout(() => {
-            notification.style.opacity = '0';
-            notification.style.transform = 'translateX(120%)';
-            setTimeout(() => notification.remove(), 500);
-        }, 3000);
+            notificationEntry.element.remove();
+        }, 380);
+
+        activeNotifications.delete(notificationKey);
+    }
+
+    function restartCopySuccessAnimation(triggerBtn) {
+        if (!triggerBtn) {
+            return;
+        }
+
+        triggerBtn.classList.remove('copy-success');
+        void triggerBtn.offsetWidth;
+        triggerBtn.classList.add('copy-success');
     }
 
     // --- Modal --- //
@@ -140,8 +218,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     modalExplorerBtn.addEventListener('click', () => {
-        window.open(currentModalData.explorerUrl, '_blank');
-        showNotification(`Opening link for ${currentModalData.name}...`, 'info');
+        openExternal(currentModalData.explorerUrl);
+        showNotification(`Opening ${currentModalData.name} link…`, 'info');
         hideModal();
     });
 
@@ -187,8 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const name = card.dataset.name;
                 const explorerTemplate = card.dataset.explorer;
                 const explorerUrl = explorerTemplate.replace('%a', address);
-                window.open(explorerUrl, '_blank');
-                showNotification(`Opening ${name} explorer...`, 'info');
+                openExternal(explorerUrl);
+                showNotification(`Opening ${name} explorer…`, 'info');
             });
         }
     });
@@ -198,10 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navigator.clipboard.writeText(text).then(() => {
             const type = (name === 'PayPal' || name === 'Cash App') ? (name === 'PayPal' ? 'Username' : 'Cashtag') : 'Address';
             showNotification(`${name} ${type} copied!`, 'success');
-            if (triggerBtn) {
-                triggerBtn.classList.add('copy-success');
-                setTimeout(() => triggerBtn.classList.remove('copy-success'), 600);
-            }
+            restartCopySuccessAnimation(triggerBtn);
         }).catch(err => {
             console.error('Failed to copy: ', err);
             showNotification('Failed to copy address', 'error');

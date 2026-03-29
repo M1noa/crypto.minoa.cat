@@ -1,6 +1,7 @@
 /* Import fonts */
 @import url('https://fonts.googleapis.com/css2?family=Rubik+80s+Fade&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;700&display=swap');
 
 /* Spring / easing system — use these everywhere, no raw `ease` */
 :root {
@@ -8,6 +9,7 @@
     --spring-press:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
     --ease-snappy:     cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-polish:     cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* default pink theme - fallback for no js */
@@ -22,11 +24,13 @@
     --hover-border: rgba(255, 192, 203, 0.4);
     --button-bg: rgba(255, 192, 203, 0.15);
     --button-hover: rgba(255, 192, 203, 0.25);
+    --button-shadow-soft: rgba(255, 192, 203, 0.12);
+    --button-shadow-strong: rgba(255, 192, 203, 0.2);
     --link-color: #ff9eb5;
     --link-hover: #ffb8c9;
-    --notification-success-bg: rgba(80, 250, 123, 0.8);
-    --notification-error-bg: rgba(255, 85, 85, 0.8);
-    --notification-info-bg: rgba(255, 192, 203, 0.8);
+    --notification-success-bg: rgba(80, 250, 123, 0.16);
+    --notification-error-bg: rgba(255, 85, 85, 0.16);
+    --notification-info-bg: rgba(255, 192, 203, 0.14);
 }
 
 /* theme-pink */
@@ -41,11 +45,13 @@
     --hover-border: rgba(255, 192, 203, 0.4);
     --button-bg: rgba(255, 192, 203, 0.15);
     --button-hover: rgba(255, 192, 203, 0.25);
+    --button-shadow-soft: rgba(255, 192, 203, 0.12);
+    --button-shadow-strong: rgba(255, 192, 203, 0.2);
     --link-color: #ff9eb5;
     --link-hover: #ffb8c9;
-    --notification-success-bg: rgba(80, 250, 123, 0.8);
-    --notification-error-bg: rgba(255, 85, 85, 0.8);
-    --notification-info-bg: rgba(255, 192, 203, 0.8);
+    --notification-success-bg: rgba(80, 250, 123, 0.16);
+    --notification-error-bg: rgba(255, 85, 85, 0.16);
+    --notification-info-bg: rgba(255, 192, 203, 0.14);
 }
 
 /* theme-white */
@@ -60,11 +66,13 @@
     --hover-border: rgba(255, 255, 255, 0.4);
     --button-bg: rgba(255, 255, 255, 0.15);
     --button-hover: rgba(255, 255, 255, 0.25);
+    --button-shadow-soft: rgba(255, 255, 255, 0.1);
+    --button-shadow-strong: rgba(255, 255, 255, 0.18);
     --link-color: #ffffff;
     --link-hover: #f0f0f0;
-    --notification-success-bg: rgba(80, 250, 123, 0.8);
-    --notification-error-bg: rgba(255, 85, 85, 0.8);
-    --notification-info-bg: rgba(255, 255, 255, 0.8);
+    --notification-success-bg: rgba(80, 250, 123, 0.16);
+    --notification-error-bg: rgba(255, 85, 85, 0.16);
+    --notification-info-bg: rgba(255, 255, 255, 0.14);
 }
 
 
@@ -80,11 +88,18 @@
     --hover-border: rgba(173, 216, 230, 0.4);
     --button-bg: rgba(173, 216, 230, 0.15);
     --button-hover: rgba(173, 216, 230, 0.25);
+    --button-shadow-soft: rgba(173, 216, 230, 0.12);
+    --button-shadow-strong: rgba(173, 216, 230, 0.18);
     --link-color: #add8e6;
     --link-hover: rgba(173, 216, 230, 0.8);
-    --notification-success-bg: rgba(80, 250, 123, 0.8);
-    --notification-error-bg: rgba(255, 85, 85, 0.8);
-    --notification-info-bg: rgba(173, 216, 230, 0.8);
+    --notification-success-bg: rgba(80, 250, 123, 0.16);
+    --notification-error-bg: rgba(255, 85, 85, 0.16);
+    --notification-info-bg: rgba(173, 216, 230, 0.14);
+}
+
+html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0.06);
 }
 
 
@@ -107,13 +122,14 @@
 body {
     background-color: var(--background);
     color: var(--text);
-    font-family: 'Ubuntu Mono', monospace;
+    font-family: 'Sora', sans-serif;
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
     position: relative;
+    touch-action: manipulation;
 }
 
 /* Animated noise background */
@@ -149,7 +165,7 @@ body {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1060px;
     margin: 0 auto;
     padding: 2rem;
     width: 100%;
@@ -178,7 +194,7 @@ header p {
 
 .wallets-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 1.5rem;
 }
 
@@ -188,44 +204,51 @@ header p {
     display: block;
     border-radius: 18px;
     transition:
-        transform 0.5s var(--spring-bounce),
-        box-shadow 0.4s var(--ease-out-expo),
+        box-shadow 0.35s var(--ease-polish),
         filter 0.3s var(--ease-snappy);
     box-shadow:
-        0 2px 4px rgba(0,0,0,0.4),
-        0 8px 24px rgba(0,0,0,0.2);
+        0 3px 8px rgba(0,0,0,0.4),
+        0 16px 36px rgba(0,0,0,0.18);
+    transform: translateZ(0);
 }
 
 .wallet-card-link:hover {
-    transform: translateY(-8px);
     box-shadow:
-        0 8px 16px rgba(0,0,0,0.5),
-        0 20px 48px rgba(0,0,0,0.3);
-    filter: saturate(1.1);
+        0 6px 16px rgba(0,0,0,0.48),
+        0 20px 44px rgba(0,0,0,0.24);
+    filter: saturate(1.04);
 }
 
 .wallet-card, .payment-card {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent), var(--card-bg);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.025) 34%, rgba(0, 0, 0, 0.08) 100%),
+        var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 18px;
-    padding: 1.5rem;
+    padding: 1.7rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.1rem;
     transition:
-        background-color 0.25s var(--ease-snappy),
+        background 0.3s var(--ease-polish),
         border-color 0.25s var(--ease-snappy),
-        box-shadow 0.25s var(--ease-snappy);
+        box-shadow 0.3s var(--ease-polish);
     height: 100%;
     position: relative;
     overflow: hidden;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.24),
+        0 10px 28px rgba(0, 0, 0, 0.16);
 }
 
 .wallet-card::before, .payment-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,255,255,0.07), transparent 70%);
+    background:
+        radial-gradient(ellipse 70% 44% at 50% -4%, rgba(255,255,255,0.12), transparent 72%),
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 42%);
     opacity: 0;
     transition: opacity 0.4s var(--ease-out-expo);
     pointer-events: none;
@@ -249,29 +272,18 @@ header p {
 .wallet-card-link:hover .wallet-card,
 .wallet-card-link:hover .payment-card {
     border-color: var(--hover-border);
-    background: var(--card-hover);
-}
-
-.crypto-icon {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: transform 0.3s ease, filter 0.3s ease;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 34%, rgba(0, 0, 0, 0.1) 100%),
+        var(--card-hover);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+        0 14px 34px rgba(0, 0, 0, 0.2);
 }
 
 .crypto-icon--coin {
     width: 44px;
     height: 44px;
-}
-
-.crypto-icon svg {
-    width: 100%;
-    height: 100%;
-    color: var(--primary-color);
-    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.25));
 }
 
 .wallet-info {
@@ -288,6 +300,9 @@ header p {
 .wallet-info .address {
     color: var(--text-muted);
     font-size: 0.9rem;
+    font-family: 'Geist Mono', monospace;
+    font-weight: 500;
+    letter-spacing: 0.01em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -301,43 +316,63 @@ header p {
 }
 .js-enabled .wallet-actions button {
     display: flex;
-    background-color: var(--button-bg);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+        var(--button-bg);
     border: 1px solid var(--border);
     color: var(--text);
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: 11px;
     cursor: pointer;
     font-size: 1.2rem;
     justify-content: center;
     align-items: center;
     transition:
-        transform 0.2s var(--spring-bounce),
-        box-shadow 0.2s var(--spring-bounce),
+        transform 0.24s var(--ease-polish),
+        box-shadow 0.24s var(--ease-polish),
         background-color 0.15s var(--ease-snappy),
-        border-color 0.15s var(--ease-snappy);
+        border-color 0.15s var(--ease-snappy),
+        filter 0.18s var(--ease-snappy);
     box-shadow:
-        0 4px 0 0 rgba(0,0,0,0.45),
-        0 6px 16px rgba(0,0,0,0.25);
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 2px 0 rgba(0,0,0,0.5),
+        0 8px 18px rgba(0,0,0,0.18),
+        0 0 0 0 var(--button-shadow-soft);
+    transform: translateY(0) scale(1);
+    will-change: transform, box-shadow;
+}
+
+.wallet-card-link:hover .wallet-actions button {
+    transform: translateY(-1px) scale(1.045);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 3px 0 rgba(0,0,0,0.52),
+        0 14px 26px rgba(0,0,0,0.24),
+        0 0 24px -10px var(--button-shadow-strong);
 }
 
 .js-enabled .wallet-actions button:hover {
     background-color: var(--button-hover);
     border-color: var(--hover-border);
-    transform: translateY(-3px);
+    transform: translateY(-2px) scale(1.07);
+    filter: brightness(1.04);
     box-shadow:
-        0 7px 0 0 rgba(0,0,0,0.45),
-        0 10px 24px rgba(0,0,0,0.35);
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 4px 0 rgba(0,0,0,0.56),
+        0 18px 30px rgba(0,0,0,0.28),
+        0 0 26px -10px var(--button-shadow-strong);
 }
 
 .js-enabled .wallet-actions button:active {
-    transform: translateY(4px) !important;
+    transform: translateY(1px) scale(0.985) !important;
     box-shadow:
-        0 0px 0 0 rgba(0,0,0,0.45),
-        0 2px 8px rgba(0,0,0,0.15) !important;
+        inset 0 1px 0 rgba(255,255,255,0.04),
+        0 1px 0 rgba(0,0,0,0.42),
+        0 4px 10px rgba(0,0,0,0.16) !important;
     transition:
-        transform 0.08s var(--spring-press),
-        box-shadow 0.08s var(--spring-press) !important;
+        transform 0.08s var(--ease-snappy),
+        box-shadow 0.08s var(--ease-snappy) !important;
 }
 
 .wallet-actions button svg {
@@ -348,12 +383,15 @@ header p {
 .wallet-actions {
     display: flex;
     gap: 0.5rem;
+    padding-left: 0.2rem;
 }
 
 .wallet-card-link:hover .wallet-card,
 .wallet-card-link:hover .payment-card {
     border-color: var(--hover-border);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent), var(--card-hover);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 34%, rgba(0, 0, 0, 0.1) 100%),
+        var(--card-hover);
 }
 
 .crypto-icon {
@@ -364,7 +402,7 @@ header p {
     justify-content: center;
     flex-shrink: 0;
     transition:
-        transform 0.45s var(--spring-bounce),
+        transform 0.35s var(--ease-polish),
         filter 0.3s var(--ease-snappy);
 }
 
@@ -377,17 +415,17 @@ header p {
     width: 100%;
     height: 100%;
     color: var(--primary-color);
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.35));
-    transition: filter 0.3s var(--ease-snappy);
+    filter: drop-shadow(0 8px 18px rgba(0,0,0,0.28));
+    transition: filter 0.3s var(--ease-snappy), opacity 0.2s var(--ease-snappy);
 }
 
 .wallet-card-link:hover .crypto-icon {
-    transform: scale(1.2) rotate(-8deg);
-    filter: brightness(1.1);
+    transform: scale(1.04);
+    filter: brightness(1.08) saturate(1.06);
 }
 
 .wallet-card-link:hover .crypto-icon svg {
-    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
+    filter: drop-shadow(0 12px 24px rgba(0,0,0,0.42));
 }
 
 /* Payment Section */
@@ -404,7 +442,7 @@ header p {
 
 .payment-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
     max-width: 800px;
     margin: 0 auto;
@@ -431,40 +469,72 @@ footer {
         color 0.2s var(--ease-snappy),
         border-color 0.2s var(--ease-snappy),
         background-color 0.2s var(--ease-snappy),
-        transform 0.3s var(--spring-bounce),
-        letter-spacing 0.25s var(--ease-out-expo);
+        box-shadow 0.26s var(--ease-polish),
+        letter-spacing 0.25s var(--ease-out-expo),
+        filter 0.2s var(--ease-snappy);
     padding: 0.65rem 1rem;
     border: 1px solid var(--border);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.03);
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
     letter-spacing: 0;
+    overflow: hidden;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.05),
+        0 10px 24px rgba(0,0,0,0.14);
+}
+
+.footer-link::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background: linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.12) 50%, transparent 80%);
+    opacity: 0;
+    transform: translateX(-130%);
+    transition:
+        transform 0.55s var(--ease-polish),
+        opacity 0.2s var(--ease-snappy);
+    pointer-events: none;
 }
 
 .github-link:hover,
 .inspired-link:hover {
     color: var(--text-bright);
     border-color: var(--hover-border);
-    background: rgba(255, 255, 255, 0.06);
-    transform: translateY(-2px) scale(1.03);
-    letter-spacing: 0.04em;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+    letter-spacing: 0.03em;
+    filter: brightness(1.03);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 14px 30px rgba(0,0,0,0.18),
+        0 0 24px -12px var(--button-shadow-strong);
+}
+
+.github-link:hover::before,
+.inspired-link:hover::before {
+    opacity: 1;
+    transform: translateX(130%);
 }
 
 .github-link:active,
 .inspired-link:active {
-    transform: translateY(1px) scale(0.97);
+    filter: brightness(0.98);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.03),
+        0 6px 14px rgba(0,0,0,0.14);
     transition:
-        transform 0.1s var(--spring-press),
+        box-shadow 0.1s var(--ease-snappy),
         letter-spacing 0.1s var(--ease-snappy);
 }
 
 .github-link svg {
     width: 24px;
     height: 24px;
-    transition: transform 0.3s var(--spring-bounce);
+    transition: filter 0.2s var(--ease-snappy), opacity 0.2s var(--ease-snappy);
 }
 
 .github-link:hover svg {
-    transform: rotate(-8deg) scale(1.1);
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
 }
 
 .inspired-link {
@@ -481,21 +551,63 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: min(360px, calc(100vw - 32px));
+    pointer-events: none;
 }
 
 .notification {
-    padding: 15px 20px;
-    border-radius: 8px;
-    color: black;
-    font-weight: bold;
-    font-size: 1rem;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    padding: 0.95rem 1rem;
+    border-radius: 14px;
+    color: var(--text-bright);
+    font-weight: 600;
+    font-size: 0.95rem;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 20px 40px rgba(0, 0, 0, 0.22);
     opacity: 0;
     transform: translateX(100%);
-    animation: slideIn 0.5s forwards;
+    animation: slideIn 0.38s var(--ease-polish) forwards;
+    pointer-events: auto;
+}
+
+.notification__message {
+    min-width: 0;
+    flex: 1;
+}
+
+.notification__count {
+    flex-shrink: 0;
+    min-width: 2.2rem;
+    padding: 0.18rem 0.45rem;
+    border-radius: 999px;
+    text-align: center;
+    font-size: 0.78rem;
+    font-family: 'Geist Mono', monospace;
+    color: var(--text-bright);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.16s var(--ease-snappy), transform 0.16s var(--ease-snappy);
+}
+
+.notification.is-stacked .notification__count {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.notification.is-refreshing {
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 22px 44px rgba(0, 0, 0, 0.24),
+        0 0 26px -14px var(--button-shadow-strong);
 }
 
 .notification.success { background-color: var(--notification-success-bg); }
@@ -510,43 +622,6 @@ footer {
 }
 
 /* Modal */
-#modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    opacity: 1;
-    transition: opacity 0.3s ease;
-}
-
-#modal-backdrop.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-#modal-content {
-    background: var(--card-bg);
-    padding: 2rem;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    text-align: center;
-    position: relative;
-    min-width: 320px;
-    max-width: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-}
-
 #modal-close-btn {
     position: absolute;
     top: 10px;
@@ -556,12 +631,12 @@ footer {
     font-size: 1.5rem;
     color: var(--text-muted);
     cursor: pointer;
-    transition: color 0.2s ease, transform 0.2s ease;
+    transition: color 0.2s var(--ease-snappy), transform 0.2s var(--ease-snappy);
 }
 
 #modal-close-btn:hover {
     color: var(--text-bright);
-    transform: scale(1.2);
+    transform: scale(1.08);
 }
 
 #modal-title {
@@ -583,6 +658,7 @@ footer {
     background: rgba(0,0,0,0.2);
     padding: 0.5rem 1rem;
     border-radius: 6px;
+    font-family: 'Geist Mono', monospace;
 }
 
 .modal-buttons {
@@ -595,28 +671,37 @@ footer {
 #modal-copy-btn,
 #modal-explorer-btn {
     flex-grow: 1;
-    background-color: var(--button-bg);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02)),
+        var(--button-bg);
     border: 1px solid var(--border);
     color: var(--text-bright);
     padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    border-radius: 11px;
     cursor: pointer;
     font-size: 1rem;
-    font-family: 'Ubuntu Mono', monospace;
+    font-family: 'Sora', sans-serif;
+    font-weight: 600;
     transition:
-        transform 0.25s var(--spring-bounce),
-        box-shadow 0.25s var(--ease-out-expo),
+        transform 0.22s var(--ease-polish),
+        box-shadow 0.22s var(--ease-polish),
         background-color 0.15s var(--ease-snappy),
         border-color 0.15s var(--ease-snappy);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 2px 0 rgba(0,0,0,0.45),
+        0 10px 22px rgba(0, 0, 0, 0.18);
 }
 
 #modal-copy-btn:hover,
 #modal-explorer-btn:hover {
     background-color: var(--button-hover);
     border-color: var(--hover-border);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+    transform: translateY(-1px) scale(1.015);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 3px 0 rgba(0,0,0,0.5),
+        0 14px 26px rgba(0, 0, 0, 0.22);
 }
 
 /* Modal entrance/exit */
@@ -635,6 +720,7 @@ footer {
     z-index: 999;
     opacity: 1;
     transition: opacity 0.3s var(--ease-snappy);
+    overscroll-behavior: contain;
 }
 
 #modal-backdrop.hidden {
@@ -655,6 +741,9 @@ footer {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.06),
+        0 20px 44px rgba(0, 0, 0, 0.24);
     transform: scale(1) translateY(0);
     opacity: 1;
     transition:
@@ -670,17 +759,24 @@ footer {
 
 /* Universal Squish Click Effect */
 .wallet-card-link:active {
-    transform: translateY(-2px) scale(0.985);
-    transition: transform 0.15s var(--spring-press), box-shadow 0.15s var(--spring-press);
+    transition: box-shadow 0.12s var(--ease-snappy), filter 0.12s var(--ease-snappy);
     box-shadow:
-        0 4px 8px rgba(0,0,0,0.45),
-        0 10px 28px rgba(0,0,0,0.25);
+        0 4px 12px rgba(0,0,0,0.42),
+        0 14px 30px rgba(0,0,0,0.2);
+    filter: saturate(1.02);
 }
 
 #modal-copy-btn:active,
-#modal-explorer-btn:active {
-    transform: scale(0.96);
-    transition: transform 0.08s var(--spring-press), box-shadow 0.08s var(--spring-press);
+.copy-btn:active {
+    transform: translateY(1px) scale(0.985);
+    transition: transform 0.08s var(--ease-snappy), box-shadow 0.08s var(--ease-snappy);
+}
+
+#modal-explorer-btn:active,
+.explorer-btn:active,
+.footer-link:active {
+    transform: scale(0.992);
+    transition: transform 0.06s var(--ease-snappy), box-shadow 0.06s var(--ease-snappy);
 }
 
 /* Page load entrance animations */
@@ -725,12 +821,38 @@ header {
 /* Copy success micro-interaction */
 @keyframes copyPop {
     0%   { transform: scale(1); }
-    40%  { transform: translateY(-4px) scale(1.28); }
+    40%  { transform: translateY(-1px) scale(1.08); }
     100% { transform: scale(1); }
 }
 
 .copy-success {
     animation: copyPop 0.5s var(--spring-bounce) !important;
+}
+
+.wallet-card-link:focus-visible,
+.footer-link:focus-visible,
+#modal-close-btn:focus-visible,
+#modal-copy-btn:focus-visible,
+#modal-explorer-btn:focus-visible,
+.wallet-actions button:focus-visible,
+a.home-link:focus-visible {
+    outline: 2px solid var(--hover-border);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .noise-bg {
+        animation: none;
+    }
 }
 
 /* Custom Scrollbar */
@@ -760,6 +882,12 @@ header {
 
     .wallets-grid, .payment-grid {
         grid-template-columns: 1fr;
+    }
+
+    #notification-container {
+        top: 12px;
+        right: 12px;
+        width: min(360px, calc(100vw - 24px));
     }
     
     footer {
