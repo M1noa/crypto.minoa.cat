@@ -56,9 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Add a class to the body to indicate JS is enabled
     document.body.classList.add('js-enabled');
-    
-    // Initialize parallax mouse tracking for cards
-    initParallaxEffect();
 
     const notificationContainer = document.getElementById('notification-container');
     const modalBackdrop = document.getElementById('modal-backdrop');
@@ -139,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     modalCopyBtn.addEventListener('click', () => {
-        copyToClipboard(currentModalData.address, currentModalData.name);
+        copyToClipboard(currentModalData.address, currentModalData.name, modalCopyBtn);
     });
 
     modalExplorerBtn.addEventListener('click', () => {
@@ -174,10 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
             copyBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 const address = card.dataset.address;
                 const name = card.dataset.name;
-                copyToClipboard(address, name);
+                copyToClipboard(address, name, copyBtn);
             });
         }
         
@@ -197,40 +194,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Clipboard Logic --- //
-    function copyToClipboard(text, name) {
+    function copyToClipboard(text, name, triggerBtn) {
         navigator.clipboard.writeText(text).then(() => {
             const type = (name === 'PayPal' || name === 'Cash App') ? (name === 'PayPal' ? 'Username' : 'Cashtag') : 'Address';
             showNotification(`${name} ${type} copied!`, 'success');
+            if (triggerBtn) {
+                triggerBtn.classList.add('copy-success');
+                setTimeout(() => triggerBtn.classList.remove('copy-success'), 600);
+            }
         }).catch(err => {
             console.error('Failed to copy: ', err);
             showNotification('Failed to copy address', 'error');
-        });
-    }
-    
-    // --- 3D Parallax Effect for Wallet Cards --- //
-    function initParallaxEffect() {
-        const cardLinks = document.querySelectorAll('.wallet-card-link');
-
-        cardLinks.forEach(link => {
-            const card = link.querySelector('.wallet-card, .payment-card');
-            
-            link.addEventListener('mousemove', (e) => {
-                const rect = link.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                // Calculate rotation values based on mouse position inside the card
-                const rotateY = -1 * ((rect.width / 2 - x) / (rect.width / 2)) * 10; // Max 8 degrees tilt
-                const rotateX = ((rect.height / 2 - y) / (rect.height / 2)) * 10; // Max 8 degrees tilt
-                
-                // Apply the rotation to the inner card element
-                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
-
-            link.addEventListener('mouseleave', () => {
-                // Reset the inner card's transform smoothly
-                card.style.transform = 'rotateX(0deg) rotateY(0deg)';
-            });
         });
     }
 });
