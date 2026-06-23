@@ -855,6 +855,29 @@ a.home-link:focus-visible {
     }
 }
 
+/* Greyed-out unavailable wallet cards */
+.wallet-card-greyed {
+    cursor: not-allowed !important;
+    pointer-events: none;
+    opacity: 0.35;
+    filter: grayscale(1);
+}
+.wallet-card-greyed .wallet-card {
+    border-color: rgba(255,255,255,0.06) !important;
+}
+.wallet-card-greyed:hover {
+    box-shadow:
+        0 3px 8px rgba(0,0,0,0.4),
+        0 16px 36px rgba(0,0,0,0.18) !important;
+    filter: grayscale(1) !important;
+}
+.wallet-card-greyed .wallet-card::before {
+    opacity: 0 !important;
+}
+.wallet-card-greyed .wallet-actions button {
+    opacity: 0.25;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
